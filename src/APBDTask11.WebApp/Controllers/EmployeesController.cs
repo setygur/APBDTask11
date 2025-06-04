@@ -2,6 +2,7 @@ using APBDTask11.Database;
 using APBDTask11.Database.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace APBDTask11.WebApp.Controllers;
 
@@ -25,7 +26,7 @@ public class EmployeesController : ControllerBase
             .Select(e => new EmployeeListDto
             {
                 Id = e.Id,
-                FullName = $"{e.Person?.FirstName ?? ""} {e.Person?.LastName ?? ""}".Trim()
+                FullName = $"{e.Person.FirstName ?? ""} {e.Person.LastName ?? ""}".Trim()
             })
             .ToListAsync();
 

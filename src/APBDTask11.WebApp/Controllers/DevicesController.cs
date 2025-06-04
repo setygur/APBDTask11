@@ -3,6 +3,7 @@ using APBDTask11.Database.DTOs;
 using APBDTask11.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace APBDTask11.WebApp.Controllers;
 
