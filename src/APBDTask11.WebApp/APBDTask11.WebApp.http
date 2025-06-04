@@ -1,0 +1,6 @@
+@APBDTask11.WebApp_HostAddress = http://localhost:5233
+
+GET {{APBDTask11.WebApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
