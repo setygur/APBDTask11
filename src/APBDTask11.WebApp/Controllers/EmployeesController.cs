@@ -7,20 +7,23 @@ using Microsoft.EntityFrameworkCore;
 namespace APBDTask11.WebApp.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/employees")]
 public class EmployeesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<EmployeesController> _logger;
 
-    public EmployeesController(AppDbContext context)
+    public EmployeesController(AppDbContext context, ILogger<EmployeesController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<EmployeeListDto>>> GetAllEmployees()
     {
+        _logger.LogInformation($"GetAllEmployees called at {DateTime.UtcNow}");
         var employees = await _context.Employees
             .Include(e => e.Person)
             .Select(e => new EmployeeListDto
@@ -30,6 +33,7 @@ public class EmployeesController : ControllerBase
             })
             .ToListAsync();
 
+        _logger.LogInformation($"GetAllEmployees returned {employees.Count} employees");
         return Ok(employees);
     }
 
@@ -37,14 +41,19 @@ public class EmployeesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<EmployeeDetailsDto>> GetEmployeeById(int id)
     {
+        _logger.LogInformation($"GetEmployeeById{id} called at {DateTime.UtcNow}");
         var employee = await _context.Employees
             .Include(e => e.Person)
             .Include(e => e.Position)
             .FirstOrDefaultAsync(e => e.Id == id);
 
         if (employee == null)
+        {
+            _logger.LogWarning($"GetEmployeeById{id} employee was not found at {DateTime.UtcNow}");
             return NotFound();
+        }
 
+        _logger.LogInformation($"GetEmployeeById{id} returned {employee}");
         return Ok(new EmployeeDetailsDto
         {
             PassportNumber = employee.Person.PassportNumber,
