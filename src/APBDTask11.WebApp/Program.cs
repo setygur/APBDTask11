@@ -1,6 +1,8 @@
 using System.Text;
 using APBDTask11.Database;
 using APBDTask11.WebApp;
+using APBDTask11.WebApp.Helpers.CustomValidation.FileReaders;
+using APBDTask11.WebApp.Helpers.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(connectionString
 
 builder.Services.Configure<JwtOptions>(jwtConfigData);
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IValidationReader, JsonValidationReader>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -43,6 +46,9 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseMiddleware<ValidationMiddleware>();
+app.UseMiddleware<ChangeBodyMiddleware>();
 
 app.Run();
 
